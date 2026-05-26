@@ -1,6 +1,6 @@
-# NOEVA
+# ZATRON
 
-**Novel Obfuscated Embedding Vector Architecture**
+**Zero-Access Transformed Retrieval Over Noise**
 
 Privacy-preserving semantic search via multi-channel modular arithmetic. Search sensitive documents by meaning without exposing content — not to the database, not to the server, not even to the key holder.
 
@@ -12,13 +12,13 @@ Privacy-preserving semantic search via multi-channel modular arithmetic. Search 
 
 Standard semantic search stores document embeddings in plain vectors. Anyone with database access can cluster documents by topic and infer content without reading a single word.
 
-NOEVA transforms embeddings into modular barcodes: masked, quantized, and distributed across prime-modular channels. The result looks like random noise to any observer — but search still works.
+ZATRON transforms embeddings into modular barcodes: masked, quantized, and distributed across prime-modular channels. The result looks like random noise to any observer — but search still works.
 
 ```
 Standard search:  embedding → cosine similarity → ranked results
                   ⚠ Embeddings leak semantic structure
 
-NOEVA search:     embedding → modular barcode → encrypted distance → ranked results
+ZATRON search:     embedding → modular barcode → encrypted distance → ranked results
                   ✓ Barcodes reveal nothing without the key
 ```
 
@@ -38,7 +38,7 @@ All numbers verified on real data. No synthetic benchmarks.
 | Cosine (float32) | .530 | No |
 | Binary quantization | .514 | No |
 | Product quantization | .520 | No |
-| **NOEVA (ours)** | **.528** | **Yes** |
+| **ZATRON (ours)** | **.528** | **Yes** |
 
 **8× faster** than CKKS FHE on identical hardware (5ms vs 39ms per comparison).
 
@@ -47,7 +47,7 @@ Three embedding models tested. Five languages verified. Eight security tests pas
 ## Quick Start
 
 ```python
-from noeva_search import ModularBarcodeSystem
+from zatron_search import ModularBarcodeSystem
 
 # Initialize
 system = ModularBarcodeSystem(key="your-secret-key", n_channels=200)
@@ -97,9 +97,9 @@ Formal proofs under PRF assumption (HMAC-SHA256) provided in `paper/proof.pdf`.
 ## Project Structure
 
 ```
-noeva-search/
+ZATRON/
 ├── README.md
-├── noeva_search.py          # Core system (530 lines, self-testing)
+├── zatron_search.py          # Core system (530 lines, self-testing)
 ├── demo/
 │   └── encrypted_search_demo.jsx   # Interactive visual demo
 ├── paper/
@@ -111,7 +111,7 @@ noeva-search/
 ## Run Self-Test
 
 ```bash
-python noeva_search.py
+python zatron_search.py
 ```
 
 Runs 8 security tests, validates prime selection, tests access pattern guard.
@@ -119,11 +119,11 @@ Runs 8 security tests, validates prime selection, tests access pattern guard.
 ## Cite
 
 ```
-@misc{arman2026noeva,
+@misc{arman2026zatron,
   title={Lightweight Encrypted Semantic Search via Multi-Channel Modular Signaling},
   author={Zahra Arman},
   year={2026},
-  note={US Provisional Patent Filed. Available at github.com/zahraarmantech/noeva-search}
+  note={US Provisional Patent Filed. Available at github.com/zahraarmantech/ZATRON}
 }
 ```
 

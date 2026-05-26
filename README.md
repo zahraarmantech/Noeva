@@ -8,19 +8,33 @@ Privacy-preserving semantic search via multi-channel modular arithmetic. Search 
 
 ---
 
-## What It Does
+## The Problem
 
-Standard semantic search stores document embeddings in plain vectors. Anyone with database access can cluster documents by topic and infer content without reading a single word.
+Standard semantic search stores embeddings as plain vectors. Anyone with database access can cluster documents by topic and infer content — without reading a single word.
 
-ZATRON transforms embeddings into modular barcodes: masked, quantized, and distributed across prime-modular channels. The result looks like random noise to any observer — but search still works.
+## The Solution
 
-```
-Standard search:  embedding → cosine similarity → ranked results
-                  ⚠ Embeddings leak semantic structure
+ZATRON transforms embeddings into modular barcodes. Search still works. Structure disappears.
 
-ZATRON search:     embedding → modular barcode → encrypted distance → ranked results
-                  ✓ Barcodes reveal nothing without the key
-```
+![ZATRON Comparison](zatron_comparison.png)
+
+**Left:** raw embeddings — same-topic documents cluster together. An attacker sees your data structure.
+
+**Right:** ZATRON protected — random scatter. No topic structure visible.
+
+---
+
+## Attack Analysis
+
+Can an observer recover document similarity from ZATRON barcodes?
+
+![Attack Analysis](zatron_attack.png)
+
+**Left:** raw embedding distances perfectly correlate with true similarity (ρ = 1.00). Attacker wins.
+
+**Right:** ZATRON barcode distances show zero correlation (ρ = 0.09). Attacker gets nothing.
+
+---
 
 ## Results
 
@@ -44,24 +58,25 @@ All numbers verified on real data. No synthetic benchmarks.
 
 Three embedding models tested. Five languages verified. Eight security tests passed.
 
+## Try It
+
+```bash
+pip install sentence-transformers scikit-learn matplotlib
+python demo.py
+```
+
+This runs on 50 real documents, shows search quality preserved and security verified, and generates the visualizations above.
+
 ## Quick Start
 
 ```python
 from zatron_search import ModularBarcodeSystem
 
-# Initialize
 system = ModularBarcodeSystem(key="your-secret-key", n_channels=200)
-
-# Fit on corpus embeddings
 system.fit(corpus_embeddings)
 
-# Encode documents
 barcodes = system.encode(corpus_embeddings, doc_ids)
-
-# Encode query
 query_bc = system.encode_query(query_embedding)
-
-# Compare (key holder only)
 distance = system.compare(query_bc, barcodes[0])
 ```
 
@@ -72,8 +87,6 @@ distance = system.compare(query_bc, barcodes[0])
 3. **Mask**: Apply rejection-sampled salt + wave interference per document
 4. **Store**: Keep only modular residues (mod prime)
 5. **Search**: Compare in modular space — raw embedding never reconstructed
-
-Key design rule: all primes must exceed the bin count for injective modular reduction.
 
 ## Security
 
@@ -90,31 +103,27 @@ Eight independent attack vectors tested:
 | Timing side-channel | p = 1.00 | Pass |
 | CRT reconstruction | \|r\| = 0.01 | Pass |
 
-Formal proofs under PRF assumption (HMAC-SHA256) provided in `paper/proof.pdf`.
+**Threat model**: Protected against unauthorized database observers. The key holder computes distances but never reconstructs raw embeddings. This is a randomized privacy-preserving encoding, distinct from reversible block cipher encryption.
 
-**Threat model**: Protected against unauthorized database observers. The key holder computes distances but never reconstructs raw embeddings. MDS geometry recovery by key holder is mitigated via log-transform (ρ reduced from 0.63 to 0.35).
+Formal proofs under PRF assumption (HMAC-SHA256) in `paper/Formal_Security_Proof.pdf`.
 
 ## Project Structure
 
 ```
 ZATRON/
 ├── README.md
-├── zatron_search.py          # Core system (530 lines, self-testing)
+├── zatron_search.py              # Core system (self-testing)
+├── demo.py                       # One-command demo
+├── generate_visuals.py           # Generate comparison images
+├── zatron_comparison.png         # t-SNE visualization
+├── zatron_attack.png             # Attack analysis visualization
 ├── demo/
-│   └── encrypted_search_demo.jsx   # Interactive visual demo
+│   └── encrypted_search_demo.jsx # Interactive web demo
 ├── paper/
 │   ├── Lightweight_Encrypted_Semantic_Search.pdf
 │   └── Formal_Security_Proof.pdf
 └── LICENSE
 ```
-
-## Run Self-Test
-
-```bash
-python zatron_search.py
-```
-
-Runs 8 security tests, validates prime selection, tests access pattern guard.
 
 ## Cite
 
@@ -123,16 +132,14 @@ Runs 8 security tests, validates prime selection, tests access pattern guard.
   title={Lightweight Encrypted Semantic Search via Multi-Channel Modular Signaling},
   author={Zahra Arman},
   year={2026},
-  note={US Provisional Patent Filed. Available at github.com/zahraarmantech/ZATRON}
+  note={US Provisional Patent Filed. github.com/zahraarmantech/ZATRON}
 }
 ```
 
 ## License
 
-MIT License. The method described is covered by a pending US provisional patent.
+MIT License. The method is covered by a pending US provisional patent.
 
 ## Author
 
-**Zahra Arman** — Independent Researcher, Plano, TX
-
-zahra.arman.tech@gmail.com
+**Zahra Arman** — Independent Researcher, Plano, TX — zahra.arman.tech@gmail.com

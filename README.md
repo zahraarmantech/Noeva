@@ -4,8 +4,8 @@
 
 Privacy-preserving semantic search via multi-channel modular arithmetic. Search sensitive documents by meaning without exposing content — not to the database, not to the server, not even to the key holder.
 
-**Patent Pending** · US Provisional Patent Filed 2026
 **[▶ Live Demo](https://huggingface.co/spaces/zahraarman/ZATRON)** · **[GitHub](https://github.com/zahraarmantech/ZATRON)** · Patent Pending · US Provisional Patent Filed 2026
+
 ---
 
 ## The Problem
@@ -18,7 +18,7 @@ ZATRON transforms embeddings into modular barcodes. Search still works. Structur
 
 ![ZATRON Comparison](zatron_comparison.png)
 
-**Left:** raw embeddings — same-topic documents cluster together. An attacker sees your data structure.
+**Left:** raw embeddings — same-topic documents cluster together. An attacker immediately sees the structure.
 
 **Right:** ZATRON protected — random scatter. No topic structure visible.
 
@@ -38,17 +38,30 @@ Can an observer recover document similarity from ZATRON barcodes?
 
 ## Results
 
-All numbers verified on real data. No synthetic benchmarks.
+All numbers on real data. All reproducible.
+
+### Retrieval Quality
 
 | Benchmark | Corpus | Quality (% of cosine) |
 |-----------|--------|-----------------------|
 | MSMARCO | 626,906 passages | 98.2% |
-| SciFact | 5,183 docs | 95.7% |
-| NFCorpus | 3,633 docs | 89.9% |
-| STS-B | 1,379 pairs | 100.1% |
+| Natural Questions | 5,000 passages, 100 real queries | 101.6% |
+| SciFact | 5,183 scientific docs | 95.7% |
+| NFCorpus | 3,633 medical docs | 89.9% |
+| STS-B | 1,379 sentence pairs | 100.1% |
 
-| Comparison | MRR@10 | Encrypted |
-|------------|--------|-----------|
+### Real-World Challenge Tests
+
+| Dataset | What it is | Security (ρ) | Top-10 Accuracy |
+|---------|-----------|-------------|-----------------|
+| Enron Emails | 5,000 real leaked corporate emails | 0.023 ✓ | 91% |
+| Natural Questions | 5,000 passages, real Google queries | 0.031 ✓ | 100% |
+| MSMARCO | 626,906 web passages | 0.10 ✓ | 98.2% MRR |
+
+### Comparison with Existing Methods
+
+| Method | MRR@10 | Encrypted? |
+|--------|--------|------------|
 | Cosine (float32) | .530 | No |
 | Binary quantization | .514 | No |
 | Product quantization | .520 | No |
@@ -56,16 +69,28 @@ All numbers verified on real data. No synthetic benchmarks.
 
 **8× faster** than CKKS FHE on identical hardware (5ms vs 39ms per comparison).
 
-Three embedding models tested. Five languages verified. Eight security tests passed.
+Three embedding models. Five languages. Eight security tests passed.
+
+### Multilingual
+
+| Language | Quality |
+|----------|---------|
+| Arabic | 93.4% |
+| Spanish | 93.8% |
+| Korean | 95.1% |
+| Chinese | 95.4% |
+| English | 93.5% |
 
 ## Try It
 
+**Live demo (no install):**
+[https://huggingface.co/spaces/zahraarman/ZATRON](https://huggingface.co/spaces/zahraarman/ZATRON)
+
+**Run locally:**
 ```bash
 pip install sentence-transformers scikit-learn matplotlib
 python demo.py
 ```
-
-This runs on 50 real documents, shows search quality preserved and security verified, and generates the visualizations above.
 
 ## Quick Start
 
@@ -142,4 +167,4 @@ MIT License. The method is covered by a pending US provisional patent.
 
 ## Author
 
-**Zahra Arman** — Independent Researcher, Plano, TX — zahra.arman.tech@gmail.com
+**Zahra Arman** — Independent Researcher — zahra.arman.tech@gmail.com
